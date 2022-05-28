@@ -8,7 +8,7 @@ use think\Model;
 
 trait Common
 {
-    use JsonReturn;
+    //use JsonReturn;
 
     /**
      * 列表查询sql捕获
