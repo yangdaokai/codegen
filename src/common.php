@@ -1,35 +1,28 @@
 <?php
 
-use think\Console;
-use think\db\Query;
 use think\Cache;
 use think\Config;
-use think\Env;
-use think\Route;
+use think\Console;
+use think\db\Query;
 use think\Loader;
-
-if (!class_exists('\\think\\Loader')) {
-    return;
-}
+use think\Route;
 
 Console::addDefaultCommands([
     'Generate\\Command\\Generate',
 ]);
 
-$rootPath = Env::get('root_path');
-if (!empty($rootPath) && file_exists($rootPath . '/generate.lock')) {
-    Route::rules([
-        'generate/showTables'        => '\\Generate\\Controller\\Generate@showTables',
-        'generate/getModelData'      => '\\Generate\\Controller\\Generate@getModelData',
+if (defined('ROOT_PATH') && file_exists(ROOT_PATH . '/generate.lock')) {
+    Route::rule([
+        'generate/showTables' => '\\Generate\\Controller\\Generate@showTables',
+        'generate/getModelData' => '\\Generate\\Controller\\Generate@getModelData',
         'generate/getTableFieldData' => '\\Generate\\Controller\\Generate@getTableFieldData',
-        'generate/generate'          => '\\Generate\\Controller\\Generate@generate',
-        'generate/generateRelation'  => '\\Generate\\Controller\\Generate@generateRelation',
-        'generate'                   => '\\Generate\\Controller\\Generate@index',
+        'generate/generate' => '\\Generate\\Controller\\Generate@generate',
+        'generate/generateRelation' => '\\Generate\\Controller\\Generate@generateRelation',
+        'generate' => '\\Generate\\Controller\\Generate@index',
     ]);
 }
 
-//设置查询事件
-$callback = function (Query $query) {
+$callback = function ($_, Query $query) {
     $table = $query->getTable();
     $prefix = Config::get('database.prefix');
     $name = preg_replace('/^' . $prefix . '/', '', $table);
